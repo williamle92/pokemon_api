@@ -1,37 +1,65 @@
-const form = document.querySelector('#pokeform');
 
-
-const getData = async (poke) => {
-    let response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${poke}`)
+//First things, first. Get the data from your form.
+const getData = async (pokemon) => {
+    let response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
     console.log(response);
     return response.data;
 }
 
-const DOM_Elements = {
-    pokemonList: '.pokemon-list'
+let form = document.querySelector('#pokeDataForm');
+
+
+const loadPoke= async (event) => {
+    event.preventDefault();
+    let poke = document.getElementById('pokemon').value.toLowerCase()
+    console.log(event)
+    let data = await getData(poke)
+    console.log(data)
+    createPokeHTML(data)
 }
 
+const createPokeHTML = (pokemon) =>{
+    let dataDisplay = document.getElementsByClassName('showPokemon')[0];
+    dataDisplay.innerHTML = '';
 
-const createList = (name, type, weight) => {
-    const html = `<a href="#" class="list-group-item list-group-item-action list-group-item-light" name="${name}">${type} ${weight} </a>`;
-    document.querySelector(DOM_Elements.pokemonList).insertAdjacentHTML('beforeend', html);
+
+    let pokeName = document.createElement('h2');
+    pokeName.innerHTML = 'Name: ' + pokemon.name;
+    dataDisplay.insertAdjacentElement('beforeend', pokeName);
+
+    let pokeType = document.createElement('h4')
+    pokeType.innerHTML = "Type: " + pokemon.types[0].type.name;
+    dataDisplay.insertAdjacentElement('beforeend', pokeType);
+
+    let pokeWeight = document.createElement('h4');
+    pokeWeight.innerHTML = "Weight: " + pokemon.weight;
+    dataDisplay.insertAdjacentElement('beforeend', pokeWeight)
+
+    let pokeHeight = document.createElement('h4');
+    pokeHeight.innerHTML = "Height: " + pokemon.height;
+    dataDisplay.insertAdjacentElement('beforeend', pokeHeight)
+    
+
+    let pokeAbility = document.createElement('h4');
+    pokeHeight.innerHTML = "Ability: " + pokemon.abilities[0].ability.name;
+    dataDisplay.insertAdjacentElement('beforeend', pokeAbility)
+
+
+
+
+    let pokeImg = document.createElement('img')
+    pokeImg.src = pokemon.sprites.front_default;
+    console.log(pokeImg);
+    dataDisplay.insertAdjacentElement('beforeend', pokeImg)
+
+    let pokeBackImg = document.createElement('img')
+    pokeBackImg.src = pokemon.sprites.back_default;
+    console.log(pokeBackImg);
+    dataDisplay.insertAdjacentElement('beforeend', pokeBackImg)
+
+    
+
 
 }
-const loadData = async () => {
-    const pokeMau = document.getElementsByClassName('pokemon-list')[0].childElementCount
-    if (pokeMau){
-        console.warn('You already have data')
-    }else{
-        const p = await getData(form);
-        console.log(p);
-        p.forEach((element) =>{
-            createList(element.name, element.types[1][0], element.weight)
-        });
-    }
-}
 
-
-// form.addEventListener('submit', (event)=>{
-//     event.defaultPrevented();
-//     console.log(event);
-//     let queryName = document.querySelector('#name');
+form.addEventListener('submit', loadPoke);

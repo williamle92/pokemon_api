@@ -1,0 +1,1 @@
+Using vanilla JavaScript, css, and html I created a pokemon search application by pulling data from https://pokeapi.co/api/v2 and displaying these parameters. 
